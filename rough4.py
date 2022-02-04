@@ -329,7 +329,7 @@ tol1 = 0.0011
 eqs1 = ikt_eqs(mech, pose1, tol1)
 
 # print(eqs1)
-gb = get_ikt_gb_lex(eqs1)
+# gb = get_ikt_gb_lex(eqs1)
 
 
-print(gb)
+print(eqs1)
