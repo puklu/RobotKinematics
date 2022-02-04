@@ -1,0 +1,10 @@
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# approximate rotation
+# R = np.array([[0.8047,   -0.5059,   -0.3106],
+#               [0.3106,    0.8047,   -0.5059],
+#               [0.5059,    0.3106,    0.8047]])

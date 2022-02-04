@@ -1,0 +1,16 @@
+# Maple code for computing the reduced lexicographic Groebner basis of the set of polynomial equations eqX.
+
+restart:
+with(LinearAlgebra):
+with(Groebner):
+eqX := [];
+vr := [c1,s1,c2,s2,c3,s3,c4,s4,c5,s5,c6,s6];
+mo := plex(op(vr));
+B := Basis(eqX, mo):
+for i to nops(B) do
+    B[i] := evalf[20](B[i]/LeadingCoefficient(B[i], mo));
+end do;
+fd := open("gb.txt",WRITE):
+fprintf(fd,convert(B,string)):
+close(fd):
+quit;
