@@ -24,10 +24,13 @@ from sympy.polys.polytools import Poly
 
 
 
-c1, s6 = symbols('c1, s6')
+# c1, s6 = symbols('c1, s6')
 # eqs = [Poly(q6**2 + p1 + 1), Poly(q6 + p1 + 1)]
 # gb = get_ikt_gb_lex(eqs)
 # print(gb)
 
-gb = [Poly(1.0*s6**2 - 1.0*s6, s6, domain='RR'), Poly(1.0*s6 + 1.0*c1 + 1.0, s6, c1, domain='RR')]
+# gb = [Poly(1.0*s6**2 - 1.0*s6, s6, domain='RR'), Poly(1.0*s6 + 1.0*c1 + 1.0, s6, c1, domain='RR')]
 
+li = [1, 2, 3, 4]
+numpyArr = np.array(li)
+print((np.transpose(numpyArr)))

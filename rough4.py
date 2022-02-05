@@ -168,14 +168,26 @@ def rational_pose(pose, tol):
     # print("rotation= "+ str(rotation))
 
     trans = pose["t"]
+    trans = np.array([trans])
 
-    # print("trans= "+ str(trans))
+    # converting translation into rational form
+    transRational = [0, 0, 0]
+    for i in range(0,3):
+        transRational[i] = rat_approx(trans[0][i], tol)
+        # print("transRational[i]= "+ str(transRational[i]))   
+    transRational = np.array([transRational])
 
     lastRow = np.array([[0, 0, 0, 1]])
 
-    inter1 = np.hstack((rotation, np.transpose(trans)))
+    # print("trans= "+ str(np.shape(transRational)))
 
+    inter1 = np.hstack((rotation, np.transpose(transRational)))
+
+    # print("inter1= "+ str(inter1))
+    
     result = np.vstack((inter1, lastRow))
+
+    # print("result= "+ str(result))
 
     return result   
     
@@ -289,6 +301,8 @@ def ikt_eqs(mechanism, pose, tol):
     # print((np.dot(np.dot(M2_3_inv, np.dot(M1_2_inv, M0_1_inv)), rational_pose(pose, tol))))
     res = M3_6  - np.dot(np.dot(M2_3_inv, np.dot(M1_2_inv, M0_1_inv)), rational_pose(pose, tol))
 
+    # print(res)
+
     resPoly = convertToPoly(res)
 
     six1 = Poly(c1**2 + s1**2 -1)
@@ -320,16 +334,16 @@ def get_ikt_gb_lex(eqs):
 
 mech = {"theta1 offset": "0", "theta2 offset": "-1.57", "theta3 offset": "0", "theta4 offset": "0", "theta5 offset": "1.57", "theta6 offset": "0", "d1": "0.6", "d2": "0", "d3": "0", "d4": "0", "d5": "0", "d6": "0", "a1": "0.150", "a2": "0.614", "a3": "0.200", "a4": "0", "a5": "0.030", "a6": "0", "alpha1": "-1.57", "alpha2": "0", "alpha3": "-1.57", "alpha4": "1.57", "alpha5": "-1.57", "alpha6": "0"}
 q = np.array([0.44649564413579207, -0.13032172899379538, 0.7871907450720678, 0.4049550809567836])
-t = np.array([[0.5139524769370176, 0.9469829362775635, 1.3668413816672553]])
+t = np.array([0.5139524769370176, 0.9469829362775635, 1.3668413816672553])
 
 pose1 = {"q" : q, "t" : t}
 
-tol1 = 0.0011
+tol1 = 0.00001
 
 eqs1 = ikt_eqs(mech, pose1, tol1)
 
 # print(eqs1)
-# gb = get_ikt_gb_lex(eqs1)
+gb = get_ikt_gb_lex(eqs1)
 
 
-print(eqs1)
+print(gb)
