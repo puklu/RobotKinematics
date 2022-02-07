@@ -7,12 +7,14 @@ from sympy.core.symbol import symbols
 import os
 from sympy.core.sympify import sympify
 from sympy.polys.polytools import Poly
+from sympy import degree
+
 
 def rat_approx(n, tol):
 
     if tol>= 1:
         f = floor(n)
-        result = f
+        result = frac(f)
     
     elif tol<1:
         tol = "{:e}".format(tol)
@@ -90,23 +92,23 @@ def rational_mechanism(mechanism, tol):
 
     rat_mechanism = mechanism.copy()
     
-    cos_alpha1 = exact_cs(float(mechanism["alpha1"]), tol)[0]
-    sin_alpha1 = exact_cs(float(mechanism["alpha1"]), tol)[1]
+    cos_alpha1 = exact_cs((mechanism["alpha1"]), tol)[0]
+    sin_alpha1 = exact_cs((mechanism["alpha1"]), tol)[1]
 
-    cos_alpha2 = exact_cs(float(mechanism["alpha2"]), tol)[0]
-    sin_alpha2 = exact_cs(float(mechanism["alpha2"]), tol)[1]
+    cos_alpha2 = exact_cs((mechanism["alpha2"]), tol)[0]
+    sin_alpha2 = exact_cs((mechanism["alpha2"]), tol)[1]
 
-    cos_alpha3 = exact_cs(float(mechanism["alpha3"]), tol)[0]
-    sin_alpha3 = exact_cs(float(mechanism["alpha3"]), tol)[1]
+    cos_alpha3 = exact_cs((mechanism["alpha3"]), tol)[0]
+    sin_alpha3 = exact_cs((mechanism["alpha3"]), tol)[1]
 
-    cos_alpha4 = exact_cs(float(mechanism["alpha4"]), tol)[0]
-    sin_alpha4 = exact_cs(float(mechanism["alpha4"]), tol)[1]
+    cos_alpha4 = exact_cs((mechanism["alpha4"]), tol)[0]
+    sin_alpha4 = exact_cs((mechanism["alpha4"]), tol)[1]
 
-    cos_alpha5 = exact_cs(float(mechanism["alpha5"]), tol)[0]
-    sin_alpha5 = exact_cs(float(mechanism["alpha5"]), tol)[1]
+    cos_alpha5 = exact_cs((mechanism["alpha5"]), tol)[0]
+    sin_alpha5 = exact_cs((mechanism["alpha5"]), tol)[1]
 
-    cos_alpha6 = exact_cs(float(mechanism["alpha6"]), tol)[0]
-    sin_alpha6 = exact_cs(float(mechanism["alpha6"]), tol)[1]
+    cos_alpha6 = exact_cs((mechanism["alpha6"]), tol)[0]
+    sin_alpha6 = exact_cs((mechanism["alpha6"]), tol)[1]
 
     rat_mechanism["cos alpha1"] = rat_mechanism["alpha1"]
     del rat_mechanism["alpha1"]
@@ -145,19 +147,19 @@ def rational_mechanism(mechanism, tol):
     rat_mechanism["cos alpha5"] = cos_alpha5
     rat_mechanism["cos alpha6"] = cos_alpha6
 
-    rat_mechanism["a1"] = rat_approx(float(mechanism["a1"]), tol)
-    rat_mechanism["a2"] = rat_approx(float(mechanism["a2"]), tol)
-    rat_mechanism["a3"] = rat_approx(float(mechanism["a3"]), tol)
-    rat_mechanism["a4"] = rat_approx(float(mechanism["a4"]), tol)
-    rat_mechanism["a5"] = rat_approx(float(mechanism["a5"]), tol)
-    rat_mechanism["a6"] = rat_approx(float(mechanism["a6"]), tol)
+    rat_mechanism["a1"] = rat_approx((mechanism["a1"]), tol)
+    rat_mechanism["a2"] = rat_approx((mechanism["a2"]), tol)
+    rat_mechanism["a3"] = rat_approx((mechanism["a3"]), tol)
+    rat_mechanism["a4"] = rat_approx((mechanism["a4"]), tol)
+    rat_mechanism["a5"] = rat_approx((mechanism["a5"]), tol)
+    rat_mechanism["a6"] = rat_approx((mechanism["a6"]), tol)
 
-    rat_mechanism["d1"] = rat_approx(float(mechanism["d1"]), tol)
-    rat_mechanism["d2"] = rat_approx(float(mechanism["d2"]), tol)
-    rat_mechanism["d3"] = rat_approx(float(mechanism["d3"]), tol)
-    rat_mechanism["d4"] = rat_approx(float(mechanism["d4"]), tol)
-    rat_mechanism["d5"] = rat_approx(float(mechanism["d5"]), tol)
-    rat_mechanism["d6"] = rat_approx(float(mechanism["d6"]), tol)
+    rat_mechanism["d1"] = rat_approx((mechanism["d1"]), tol)
+    rat_mechanism["d2"] = rat_approx((mechanism["d2"]), tol)
+    rat_mechanism["d3"] = rat_approx((mechanism["d3"]), tol)
+    rat_mechanism["d4"] = rat_approx((mechanism["d4"]), tol)
+    rat_mechanism["d5"] = rat_approx((mechanism["d5"]), tol)
+    rat_mechanism["d6"] = rat_approx((mechanism["d6"]), tol)
 
     return rat_mechanism
     pass
@@ -178,7 +180,7 @@ def rational_pose(pose, tol):
         # print("transRational[i]= "+ str(transRational[i]))   
     transRational = np.array([transRational])
 
-    lastRow = np.array([[0, 0, 0, 1]])
+    lastRow = np.array([[frac(0), frac(0), frac(0), frac(1)]])
 
     # print("trans= "+ str(np.shape(transRational)))
 
@@ -204,13 +206,13 @@ def calculate_M(mechanism, k, tol):
         a = np.array([   
                    [c, -s, 0, 0],
                    [s,  c, 0, 0],
-                   [0,                                                           0,                                                          1, rat_mech["d"+str(k)]  ],
-                   [0,                                                           0,                                                          0, 1]
+                   [0, 0, 1, rat_mech["d"+str(k)]  ],
+                   [0, 0, 0, 1]
                       ])
         
         b = np.array([
                     [1, 0,                            0,                           rat_mech["a"+str(k)]   ],
-                    [0, rat_mech["cos alpha"+str(k)], rat_mech["sin alpha"+str(k)], 0],
+                    [0, rat_mech["cos alpha"+str(k)], - rat_mech["sin alpha"+str(k)], 0],
                     [0, rat_mech["sin alpha"+str(k)], rat_mech["cos alpha"+str(k)], 0],
                     [0, 0,                      0,                      1]   
         ])
@@ -243,7 +245,7 @@ def ikt_eqs(mechanism, pose, tol):
     M0_1 = calculate_M(mechanism, 1, tol)
 
     M0_1_inv_a = np.array([
-                          [1, 0, 0, rat_mech["a1"] ],
+                          [1, 0, 0, -rat_mech["a1"] ],
                           [0, rat_mech["cos alpha1"], rat_mech["sin alpha1"], 0],
                           [0, -rat_mech["sin alpha1"], rat_mech["cos alpha1"], 0],
                           [0, 0, 0, 1]
@@ -252,7 +254,7 @@ def ikt_eqs(mechanism, pose, tol):
     M0_1_inv_b = np.array([
                           [c1, s1, 0, 0],
                           [-s1, c1,0, 0],
-                          [0, -rat_mech["sin alpha1"], 0, -rat_mech["d1"] ],
+                          [0, 0, 1, -rat_mech["d1"] ],
                           [0, 0, 0, 1]
     ])
 
@@ -263,7 +265,7 @@ def ikt_eqs(mechanism, pose, tol):
     M1_2 = calculate_M(mechanism, 2, tol)
 
     M1_2_inv_a = np.array([
-                          [1, 0, 0, rat_mech["a2"] ],
+                          [1, 0, 0, -rat_mech["a2"] ],
                           [0, rat_mech["cos alpha2"], rat_mech["sin alpha2"], 0],
                           [0, -rat_mech["sin alpha2"], rat_mech["cos alpha2"], 0],
                           [0, 0, 0, 1]
@@ -272,7 +274,7 @@ def ikt_eqs(mechanism, pose, tol):
     M1_2_inv_b = np.array([
                           [c2, s2, 0, 0],
                           [-s2, c2,0, 0],
-                          [0, -rat_mech["sin alpha2"], 0, -rat_mech["d2"] ],
+                          [0, 0, 1, -rat_mech["d2"] ],
                           [0, 0, 0, 1]
     ])
 
@@ -281,7 +283,7 @@ def ikt_eqs(mechanism, pose, tol):
     M2_3 = calculate_M(mechanism, 3, tol)
 
     M2_3_inv_a = np.array([
-                          [1, 0, 0, rat_mech["a3"] ],
+                          [1, 0, 0, -rat_mech["a3"] ],
                           [0, rat_mech["cos alpha3"], rat_mech["sin alpha3"], 0],
                           [0, -rat_mech["sin alpha3"], rat_mech["cos alpha3"], 0],
                           [0, 0, 0, 1]
@@ -290,7 +292,7 @@ def ikt_eqs(mechanism, pose, tol):
     M2_3_inv_b = np.array([
                           [c3, s3, 0, 0],
                           [-s3, c3,0, 0],
-                          [0, -rat_mech["sin alpha3"], 0, -rat_mech["d3"] ],
+                          [0, 0, 1, -rat_mech["d3"] ],
                           [0, 0, 0, 1]
     ])
 
@@ -330,11 +332,65 @@ def get_ikt_gb_lex(eqs):
     os.system('maple compute_gb.txt')
     with open("gb.txt") as file:
         basis = file.readline()
-    # print("test= "+str(sympify(basis.replace('^', '**')))  )  
-    return [Poly(eq) for eq in sympify(basis.replace('^', '**'))]
+    # print("test= "+str(sympify(basis.replace('^', '**')))  ) 
+    basis = sympify(basis.replace('^', '**'))
+    if basis == [1]:
+        return [1]
+    return [Poly(eq) for eq in basis]
 
 
-mech = {"theta1 offset": "0", "theta2 offset": "-1.57", "theta3 offset": "0", "theta4 offset": "0", "theta5 offset": "1.57", "theta6 offset": "0", "d1": "0.6", "d2": "0", "d3": "0", "d4": "0", "d5": "0", "d6": "0", "a1": "0.150", "a2": "0.614", "a3": "0.200", "a4": "0", "a5": "0.030", "a6": "0", "alpha1": "-1.57", "alpha2": "0", "alpha3": "-1.57", "alpha4": "1.57", "alpha5": "-1.57", "alpha6": "0"}
+def computeAtan(solutions):
+    
+    solution = {"theta6": [],"theta5": [],"theta4": [],"theta3": [],"theta2": [],"theta1": []}
+
+    for i in range(0,len(solutions.get("s6"))):
+        theta6 = solution["theta6"].append(atan2(solutions.get("s6")[i], solutions.get("c6")[i]) - mech.get("theta6 offset"))
+        theta5 = solution["theta5"].append(atan2(solutions.get("s5")[i], solutions.get("c5")[i]) - mech.get("theta5 offset"))
+        theta4 = solution["theta4"].append(atan2(solutions.get("s4")[i], solutions.get("c4")[i]) - mech.get("theta4 offset"))
+        theta3 = solution["theta3"].append(atan2(solutions.get("s3")[i], solutions.get("c3")[i]) - mech.get("theta3 offset"))
+        theta2 = solution["theta2"].append(atan2(solutions.get("s2")[i], solutions.get("c2")[i]) - mech.get("theta2 offset"))
+        theta1 = solution["theta1"].append(atan2(solutions.get("s1")[i], solutions.get("c1")[i]) - mech.get("theta1 offset"))
+
+    return solution    
+
+def solve_ikt_gb_lex(gb):
+    print("running solve ikt gb lex")
+
+    solution = {"s6": [],"c6": [],"s5": [],"c5": [],"s4": [],"c4": [],"s3": [],"c3": [],"s2": [],"c2": [],"s1": [],"c1": []}
+
+    # coefficients = np.array([0]*(degree(gb[0])+1), dtype=float)       
+    coefficients = np.asarray(Poly.all_coeffs(gb[0]))
+    sols = np.roots(coefficients)
+    # print("sol= "+str(sols))
+
+    for sol in sols:
+        if (np.isreal(sol)):
+            solution["s6"].append(float(sol))
+    
+    for i in range(0, len(solution.get("s6"))):
+        for j in range(1,len(gb)):  
+
+            coefficients = np.array([0]*(degree(gb[j])+1), dtype=float)
+            gb_new = gb[j].subs({"s6":solution.get("s6")[i]})   
+            coefficients = np.asarray(Poly.all_coeffs(gb_new))
+
+            sol = np.roots(coefficients)
+            # print("sol= "+str(sol))
+
+            # solution["c1"].append(sol[0])
+            solution[list(solution.keys())[j]].append(sol[0])
+            # print("solution= " + str(solution))
+        
+    # solution = computeAtan(solution)
+    solution = list(solution.items())
+    return (solution)
+
+    pass
+
+
+
+
+mech = {"theta1 offset": 0, "theta2 offset": -np.pi/2, "theta3 offset": 0, "theta4 offset": 0, "theta5 offset": np.pi/2, "theta6 offset": 0, "d1": 0.6, "d2": 0, "d3": 0, "d4": 0.64, "d5": 0, "d6": 0.2, "a1": 0.150, "a2": 0.614, "a3": 0.200, "a4": 0, "a5": 0.030, "a6": 0, "alpha1": -np.pi/2, "alpha2": 0, "alpha3": -np.pi/2, "alpha4": np.pi/2, "alpha5": -np.pi/2, "alpha6": 0}
 q = np.array([0.44649564413579207, -0.13032172899379538, 0.7871907450720678, 0.4049550809567836])
 t = np.array([0.5139524769370176, 0.9469829362775635, 1.3668413816672553])
 
@@ -346,71 +402,13 @@ eqs1 = ikt_eqs(mech, pose1, tol1)
 
 
 # print((eqs1))
-# gb = get_ikt_gb_lex(eqs1)
+gb = get_ikt_gb_lex(eqs1)
 
 
 
 # print(gb)
 
-#############################
-
-
-solution = {}
-
-# print(solution)
-
-for i in range(0,len(gb)):
-    coefficients = np.array([0]*(degree(gb[i])+1), dtype=float)
-    
-    print("coeffsBefore= "+ str(coefficients))
-    print("gb["+str(i)+"]= "+str(gb[i]))
-    
-    coefficients = np.asarray(Poly.all_coeffs(gb[i]))
-    
-    print("coeffsAfter= "+ str(coefficients))
-
-    ##companion matrix to solve
-    # compMat = (scipy.linalg.companion(coefficients))
-    # compMat = Matrix(compMat)
-    # print(compMat)
-    # w,v = np.linalg.eig((sympy.Matrix(compMat)))
-    # eigVals = compMat.eigenvals()
-    # eigVals = eigVals.keys()
-    # print(eigVals)
-
-    sol = np.roots(coefficients)
-    solution["s6"] = sol
-    
-    
-    print("sol= "+str(sol))
-    print("solution= "+str(solution))
-
-    for j in range(0, len(solution["s6"])):
-        gb_new = [Poly(0, s6, c1) for k in range(0,len(solution["s6"]))]
-        
-        print("i="+str(i))
-        print("j="+str(j))
-        # print("solution[i][j]= "+ str(solution[i][j]))
-        
-        gb_new[i+1] = gb[i+1].subs({s6:solution.get("s6")[j]})
-        
-        print("gb["+str(i+1)+"]= "+str(gb_new[i+1]))
-        print("gb["+str(i+1)+"]= "+str(type(gb_new[i+1])))
-    #   coefficients = np.array([0]*(degree(gb[i+1])+1), dtype=float)
-    #   gb[i+1] = gb[i+1].eval(sol[j])
-        coefficients = np.asarray(Poly.all_coeffs(gb_new[i+1]))
-        sol = np.roots(coefficients)
-        
-        print("sol= "+str(sol))
-        # print("solution[i+1]= "+str(solution[i+1]))
-
-        # solution[i+1] = np.append(solution[i+1] ,sol)
-        solution["c1"] = solution["c1"] + sol
-
-        print("solution= "+str(solution))
-        
+print(solve_ikt_gb_lex(gb))
 
 
 
-
-######################
