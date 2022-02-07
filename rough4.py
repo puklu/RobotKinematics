@@ -77,6 +77,7 @@ def exact_rot(q, tol):
         r = q2r(qrat)
         
         if(np.linalg.norm(r-q2r(q),'fro')<tol):
+            # print(np.linalg.norm(r-q2r(q),'fro'))
             return r
         else:
             tolq = tolq/10
@@ -183,8 +184,8 @@ def rational_pose(pose, tol):
 
     inter1 = np.hstack((rotation, np.transpose(transRational)))
 
-    # print("inter1= "+ str(inter1))
-    
+    # print("RTR= "+ str(np.dot(np.transpose(rotation),rotation)))
+    # print("detR= "+ str(np.linalg.det(rotation)))
     result = np.vstack((inter1, lastRow))
 
     # print("result= "+ str(result))
@@ -305,12 +306,12 @@ def ikt_eqs(mechanism, pose, tol):
 
     resPoly = convertToPoly(res)
 
-    six1 = Poly(c1**2 + s1**2 -1)
-    six2 = Poly(c2**2 + s2**2 -1)
-    six3 = Poly(c3**2 + s3**2 -1)
-    six4 = Poly(c4**2 + s4**2 -1)
-    six5 = Poly(c5**2 + s5**2 -1)
-    six6 = Poly(c6**2 + s6**2 -1)
+    six1 = Poly(c1**2 + s1**2 -1, domain = 'QQ')
+    six2 = Poly(c2**2 + s2**2 -1, domain = 'QQ')
+    six3 = Poly(c3**2 + s3**2 -1, domain = 'QQ')
+    six4 = Poly(c4**2 + s4**2 -1, domain = 'QQ')
+    six5 = Poly(c5**2 + s5**2 -1, domain = 'QQ')
+    six6 = Poly(c6**2 + s6**2 -1, domain = 'QQ')
 
     result =  [resPoly[0][0],resPoly[0][1], resPoly[0][2], resPoly[0][3], resPoly[1][0],resPoly[1][1],resPoly[1][2],resPoly[1][3],resPoly[2][0],resPoly[2][1], resPoly[2][2], resPoly[2][3], six1, six2, six3, six4, six5, six6 ]
 
@@ -329,6 +330,7 @@ def get_ikt_gb_lex(eqs):
     os.system('maple compute_gb.txt')
     with open("gb.txt") as file:
         basis = file.readline()
+    # print("test= "+str(sympify(basis.replace('^', '**')))  )  
     return [Poly(eq) for eq in sympify(basis.replace('^', '**'))]
 
 
@@ -342,8 +344,73 @@ tol1 = 0.00001
 
 eqs1 = ikt_eqs(mech, pose1, tol1)
 
-# print(eqs1)
-gb = get_ikt_gb_lex(eqs1)
+
+# print((eqs1))
+# gb = get_ikt_gb_lex(eqs1)
 
 
-print(gb)
+
+# print(gb)
+
+#############################
+
+
+solution = {}
+
+# print(solution)
+
+for i in range(0,len(gb)):
+    coefficients = np.array([0]*(degree(gb[i])+1), dtype=float)
+    
+    print("coeffsBefore= "+ str(coefficients))
+    print("gb["+str(i)+"]= "+str(gb[i]))
+    
+    coefficients = np.asarray(Poly.all_coeffs(gb[i]))
+    
+    print("coeffsAfter= "+ str(coefficients))
+
+    ##companion matrix to solve
+    # compMat = (scipy.linalg.companion(coefficients))
+    # compMat = Matrix(compMat)
+    # print(compMat)
+    # w,v = np.linalg.eig((sympy.Matrix(compMat)))
+    # eigVals = compMat.eigenvals()
+    # eigVals = eigVals.keys()
+    # print(eigVals)
+
+    sol = np.roots(coefficients)
+    solution["s6"] = sol
+    
+    
+    print("sol= "+str(sol))
+    print("solution= "+str(solution))
+
+    for j in range(0, len(solution["s6"])):
+        gb_new = [Poly(0, s6, c1) for k in range(0,len(solution["s6"]))]
+        
+        print("i="+str(i))
+        print("j="+str(j))
+        # print("solution[i][j]= "+ str(solution[i][j]))
+        
+        gb_new[i+1] = gb[i+1].subs({s6:solution.get("s6")[j]})
+        
+        print("gb["+str(i+1)+"]= "+str(gb_new[i+1]))
+        print("gb["+str(i+1)+"]= "+str(type(gb_new[i+1])))
+    #   coefficients = np.array([0]*(degree(gb[i+1])+1), dtype=float)
+    #   gb[i+1] = gb[i+1].eval(sol[j])
+        coefficients = np.asarray(Poly.all_coeffs(gb_new[i+1]))
+        sol = np.roots(coefficients)
+        
+        print("sol= "+str(sol))
+        # print("solution[i+1]= "+str(solution[i+1]))
+
+        # solution[i+1] = np.append(solution[i+1] ,sol)
+        solution["c1"] = solution["c1"] + sol
+
+        print("solution= "+str(solution))
+        
+
+
+
+
+######################
