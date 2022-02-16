@@ -37,7 +37,11 @@ print("b3_beta_pr= "+ str(b3_beta_pr))
 # print(R)
 
 #given data
-o_pr_beta = [[1], [1], [1]]
+# o_pr_beta = [[1], [1], [1]]
+
+o_pr_o_beta_pr = [[1],[1],[1]]
+o_pr_beta = - np.dot(R, o_pr_o_beta_pr)
+
 y_pr_beta_pr = [[1],[2],[3]]
 x_beta = [[1],[2],[3]]
 y_pr_beta = np.dot(R, y_pr_beta_pr)
@@ -48,15 +52,15 @@ o_beta = np.array([0, 0, 0]) # origin point
 
 #plot settings
 ax = plt.axes(projection = '3d')
-ax.set_xlim([0,5])
-ax.set_ylim([0,5])
-ax.set_zlim([0,5])
+ax.set_xlim([-2,4])
+ax.set_ylim([-2,4])
+ax.set_zlim([-2,4])
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('z')
-ax.set_xticks([0,1,2,3,4,5])
-ax.set_yticks([0,1,2,3,4,5])
-ax.set_zticks([0,1,2,3,4,5])
+ax.set_xticks([-2,-1,0,1,2,3,4])
+ax.set_yticks([-2,-1,0,1,2,3,4])
+ax.set_zticks([-2,-1,0,1,2,3,4])
 
 
 #plotting vectors
@@ -74,15 +78,15 @@ ax.quiver(o_pr_beta[0],o_pr_beta[1],o_pr_beta[2], b3_pr_beta[0],b3_pr_beta[1],b3
 
 
 #plot of vector x in beta basis
-ax.quiver(o_beta[0],o_beta[1],o_beta[2], x_beta[0],x_beta[1],x_beta[2], color= 'y')
+# ax.quiver(o_beta[0],o_beta[1],o_beta[2], x_beta[0],x_beta[1],x_beta[2], color= 'y')
 
 #plot of vector y in beta prime basis
-ax.quiver(o_pr_beta[0],o_pr_beta[1],o_pr_beta[2], y_pr_beta[0],y_pr_beta[1],y_pr_beta[2], color= 'y')
+# ax.quiver(o_pr_beta[0],o_pr_beta[1],o_pr_beta[2], y_pr_beta[0],y_pr_beta[1],y_pr_beta[2], color= 'y')
 
 # plotting oz_beta
-y_beta = np.dot(R,y_pr_beta_pr ) + o_pr_beta
-ax.quiver(o_beta[0],o_beta[1],o_beta[2], y_beta[0],y_beta[1],y_beta[2], color= 'k')
-print("oz_beta= "+ str(y_beta))
+# y_beta = np.dot(R,y_pr_beta_pr ) + o_pr_beta
+# ax.quiver(o_beta[0],o_beta[1],o_beta[2], y_beta[0],y_beta[1],y_beta[2], color= 'k')
+# print("oz_beta= "+ str(y_beta))
 
 
 

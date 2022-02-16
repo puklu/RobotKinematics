@@ -36,9 +36,10 @@ b2_beta_pr = np.dot(R_inv, b2_beta)
 b3_beta_pr = np.dot(R_inv, b3_beta)
 
 
-o_pr_o_beta_pr = [[1],[1],[1]]
+o_pr_o_beta_pr = [[1],[1],[1]]  # for a1
 o_pr_beta = - np.dot(R, o_pr_o_beta_pr)
 
+print("o_pr_beta="+ str(o_pr_beta))
 #for testing
 # o_pr_beta = [[1],[0],[1]] 
 
@@ -97,40 +98,54 @@ direction = r
 print("point"+ str(point))
 print("direction"+ str(direction))
 
+
+
 ax.quiver(point[0], point[1], point[2],direction[0][0],direction[0][1],direction[0][2], color= 'y', label='axis of motion')
 plt.legend()
 
 ############
 
 #GENERATOR
-# g1 = ((R-I)[:,0])
-# g2 = ((R-I)[:,1])
-# g3 = ((R-I)[:,2])
+g1 = ((R-I)[:,0])
+g2 = ((R-I)[:,1])
+g3 = ((R-I)[:,2])
 
 
 
-# print("g1= "+ str(g1))
-# print("g2= "+ str(g2))
-# print("g3= "+ str(g3))
+print("g1= "+ str(g1))
+print("g2= "+ str(g2))
+print("g3= "+ str(g3))
 # print("g1[0]= "+ str(g1[0]))
 # print("g1[1]= "+ str(g1[1]))
 # print("g1[2]= "+ str(g1[2]))
 
+print("R-I=" + str(R-I))
 
-# ax.quiver(point[0], point[1], point[2],g1[0],g1[0],g1[0])
-# ax.quiver(point[0], point[1], point[2],g2[0],g2[0],g2[0])
+ax.quiver(0, 0, 0,g1[0],g1[0],g1[0], label='sigma1')
+ax.quiver(0, 0, 0,g3[0],g3[0],g3[0], label='sigma2')
 
 
 plt.show()
 
-x = np.linspace(-5, 5, 1)
-y = np.linspace(-5, 5, 1)
 
-z = -x + y + point[0] - point[1] + point[2]
+#point of intersection of a1 and plane signma
+P = point
+print("P= "+str(P))
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
+P_pr = np.dot(R, P)
+print("P_pr=" + str(P_pr))
 
-surf = ax.plot_surface(x,y,z)
-plt.show()
+P_pr_pr = P_pr + o_pr_beta*direction
+print("P_pr_pr=" + str(P_pr_pr))
+
+# x = np.linspace(-5, 5, 1)
+# y = np.linspace(-5, 5, 1)
+
+# z = -x + y + point[0] - point[1] + point[2]
+
+# fig = plt.figure()
+# ax = fig.gca(projection='3d')
+
+# surf = ax.plot_surface(x,y,z)
+# plt.show()
 

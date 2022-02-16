@@ -410,25 +410,25 @@ def solve_ikt_gb_lex(gb):
 
 
 
-# mech = {"theta1 offset": 0, "theta2 offset": -np.pi/2, "theta3 offset": 0, "theta4 offset": 0, "theta5 offset": np.pi/2, "theta6 offset": 0, "d1": 0.6, "d2": 0, "d3": 0, "d4": 0.64, "d5": 0, "d6": 0.2, "a1": 0.150, "a2": 0.614, "a3": 0.200, "a4": 0, "a5": 0.030, "a6": 0, "alpha1": -np.pi/2, "alpha2": 0, "alpha3": -np.pi/2, "alpha4": np.pi/2, "alpha5": -np.pi/2, "alpha6": 0}
-# q = np.array([0.44649564413579207, -0.13032172899379538, 0.7871907450720678, 0.4049550809567836])
-# t = np.array([0.5139524769370176, 0.9469829362775635, 1.3668413816672553])
+mech = {"theta1 offset": 0, "theta2 offset": -np.pi/2, "theta3 offset": 0, "theta4 offset": 0, "theta5 offset": np.pi/2, "theta6 offset": 0, "d1": 0.6, "d2": 0, "d3": 0, "d4": 0.64, "d5": 0, "d6": 0.2, "a1": 0.150, "a2": 0.614, "a3": 0.200, "a4": 0, "a5": 0.030, "a6": 0, "alpha1": -np.pi/2, "alpha2": 0, "alpha3": -np.pi/2, "alpha4": np.pi/2, "alpha5": -np.pi/2, "alpha6": 0}
+q = np.array([0.44649564413579207, -0.13032172899379538, 0.7871907450720678, 0.4049550809567836])
+t = np.array([0.5139524769370176, 0.9469829362775635, 1.3668413816672553])
 
-# pose1 = {"q" : q, "t" : t}
+pose1 = {"q" : q, "t" : t}
 
-# tol1 = 0.00001
+tol1 = 0.00001
 
-# eqs1 = ikt_eqs(mech, pose1, tol1)
-
-
-# # print((eqs1))
-# gb = get_ikt_gb_lex(eqs1)
+eqs1 = ikt_eqs(mech, pose1, tol1)
 
 
+# print((eqs1))
+gb = get_ikt_gb_lex(eqs1)
 
-# # print(gb)
 
-# print(solve_ikt_gb_lex(gb))
+
+# print(gb)
+
+print(solve_ikt_gb_lex(gb))
 
 
 
